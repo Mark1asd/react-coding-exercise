@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 
-export const LAUNCHES_QUERY = gql`
+export const launches = gql`
   query Launches($find: LaunchFind, $order: String, $sort: String) {
     launches(find: $find, order: $order, sort: $sort) {
       id

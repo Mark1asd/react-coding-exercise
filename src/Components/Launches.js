@@ -1,57 +1,104 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@apollo/client';
-import { LAUNCHES_QUERY } from '../queries';
+import { launches } from '../queries';
+import '../Styles/Launches.css';
+import logo from '../assets/raster/wordmark.png';
 
-const PAGE_SIZE = 6; // Number of launches to show per page
+const page_size = 6;
 
 const Launches = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [allLaunches, setAllLaunches] = useState([]); // Store all fetched launches
-  const [displayedLaunches, setDisplayedLaunches] = useState([]); // Launches to display
+  const [allLaunches, setAllLaunches] = useState([]);
+  const [displayedLaunches, setDisplayedLaunches] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searched, setSearched] = useState(false);
 
-  // Fetch all launches without specifying a limit and offset
-  const { loading, error, data } = useQuery(LAUNCHES_QUERY, {
-    variables: { /* Your variables if needed, without offset and limit */ },
-  });
+  const { loading, error, data } = useQuery(launches);
 
   useEffect(() => {
     if (data && data.launches) {
-      setAllLaunches(data.launches); // Save all launches after loading
-      // Set initial displayed launches
-      setDisplayedLaunches(data.launches.slice(0, PAGE_SIZE));
+      setAllLaunches(data.launches);
+      setDisplayedLaunches(data.launches.slice(0, page_size));
     }
   }, [data]);
 
-  if (loading && !allLaunches.length) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
 
-  const totalPages = allLaunches.length ? Math.ceil(allLaunches.length / PAGE_SIZE) : 1;
+  const handleSearch = () => {
+    setSearched(true);
+    const filteredLaunches = allLaunches.filter((launch) =>
+      launch.mission_name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setDisplayedLaunches(filteredLaunches);
+    setCurrentPage(1); // Reset to first page after search
+  };
 
   const loadMoreLaunches = () => {
     const nextPage = currentPage + 1;
     setCurrentPage(nextPage);
-    const nextLaunches = allLaunches.slice(0, nextPage * PAGE_SIZE);
-    setDisplayedLaunches(nextLaunches);
+    const nextLaunches = allLaunches.slice(currentPage * page_size, nextPage * page_size);
+    setDisplayedLaunches(displayedLaunches.concat(nextLaunches));
   };
 
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error :(</p>;
+
+  const totalLaunches = allLaunches.length;
+  const currentDisplayed = currentPage * page_size > totalLaunches ? totalLaunches : currentPage * page_size;
+  const totalPages = Math.ceil(totalLaunches / page_size);
   const isLastPage = currentPage >= totalPages;
 
   return (
-    <div>
-      <h2>Launches</h2>
-      <ul>
-        {displayedLaunches.map((launch) => (
-          <li key={launch.id}>
-            {launch.mission_name} - {launch.rocket.rocket_name} - {launch.rocket.rocket_type} - {launch.launch_date_utc}
-          </li>
-        ))}
-      </ul>
-      <div>
-        <span>Page {currentPage} of {totalPages}</span>
-        <button onClick={loadMoreLaunches} disabled={loading || isLastPage}>
-          {loading ? 'Loading...' : 'Load More'}
-        </button>
+    <div className="content-box">
+      <div className="table-header">
+        <img src={logo} alt="SpaceX Logo" className="logo" />
+        <div className="search-container">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            onKeyPress={(event) => {
+              if (event.key === 'Enter') handleSearch();
+            }}
+            placeholder="Search by Mission Name..."
+            className="search-input"
+          />
+          <button onClick={handleSearch} className="search-button">Search</button>
+        </div>
       </div>
+      {searched && displayedLaunches.length === 0 && (
+        <p>No missions found with the name "{searchTerm}".</p>
+      )}
+      <table className="launches-table">
+        <thead>
+          <tr>
+            <th>Mission Name</th>
+            <th>Rocket Name</th>
+            <th>Rocket Type</th>
+            <th>Launch Year</th>
+          </tr>
+        </thead>
+        <tbody>
+          {displayedLaunches.map((launch) => (
+            <tr key={launch.id}>
+              <td>{launch.mission_name}</td>
+              <td>{launch.rocket.rocket_name}</td>
+              <td>{launch.rocket.rocket_type}</td>
+              <td>{new Date(launch.launch_date_utc).getFullYear()}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {displayedLaunches.length > 0 && !isLastPage && (
+        <div className="pagination">
+          <span>{`${currentDisplayed} of ${totalLaunches}`}</span>
+          <button onClick={loadMoreLaunches} disabled={loading || isLastPage}>
+            {loading ? 'Loading...' : 'Load More'}
+          </button>
+        </div>
+      )}
     </div>
   );
 };

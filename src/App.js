@@ -9,7 +9,7 @@ const App = () => {
     <ApolloProvider client={client}>
       <div className="App">
         <header className="App-header">
-          <h1>SpaceX Launches</h1>
+
         </header>
         <main>
           <Launches />
