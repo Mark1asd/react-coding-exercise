@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@apollo/client';
+import { useNavigate } from 'react-router-dom';
 import { launches } from '../queries';
 import '../Styles/Launches.css';
 import logo from '../assets/raster/wordmark.png';
@@ -13,6 +14,7 @@ const Launches = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searched, setSearched] = useState(false);
 
+  const navigate = useNavigate(); // Hook for navigation
   const { loading, error, data } = useQuery(launches);
 
   useEffect(() => {
@@ -32,7 +34,7 @@ const Launches = () => {
       launch.mission_name.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setDisplayedLaunches(filteredLaunches);
-    setCurrentPage(1); // Reset to first page after search
+    setCurrentPage(1);
   };
 
   const loadMoreLaunches = () => {
@@ -40,6 +42,10 @@ const Launches = () => {
     setCurrentPage(nextPage);
     const nextLaunches = allLaunches.slice(currentPage * page_size, nextPage * page_size);
     setDisplayedLaunches(displayedLaunches.concat(nextLaunches));
+  };
+
+  const handleRowClick = (id) => {
+    navigate(`/ticket/${id}`); // Navigate to the Ticket component with the given launch ID
   };
 
   if (loading) return <p>Loading...</p>;
@@ -82,7 +88,7 @@ const Launches = () => {
         </thead>
         <tbody>
           {displayedLaunches.map((launch) => (
-            <tr key={launch.id}>
+            <tr key={launch.id} onClick={() => handleRowClick(launch.id)}> {/* Clickable row */}
               <td>{launch.mission_name}</td>
               <td>{launch.rocket.rocket_name}</td>
               <td>{launch.rocket.rocket_type}</td>
