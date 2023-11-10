@@ -48,7 +48,7 @@ const Launches = () => {
     navigate(`/ticket/${id}`); // Navigate to the Ticket component with the given launch ID
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p></p>;
   if (error) return <p>Error :(</p>;
 
   const totalLaunches = allLaunches.length;
@@ -56,6 +56,7 @@ const Launches = () => {
   const totalPages = Math.ceil(totalLaunches / page_size);
   const isLastPage = currentPage >= totalPages;
 
+  
   return (
     <div className='back-home-image'>
       <div className="content-box">

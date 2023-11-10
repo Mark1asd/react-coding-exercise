@@ -16,7 +16,7 @@ const Ticket = () => {
     }
   }, [data, id]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p></p>;
   if (error) return <p>Error :(</p>;
   if (!launchDetail) return <p>No launch data available.</p>;
 
@@ -56,7 +56,6 @@ const Ticket = () => {
       </div>
     </div>
   );
-  
 };
 
 export default Ticket;
