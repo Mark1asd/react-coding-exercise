@@ -3,7 +3,7 @@ import { useQuery } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 import { launches } from '../queries';
 import '../Styles/Launches.css';
-import logo from '../assets/raster/wordmark.png';
+import logo from '../assets/raster/wordmark@2x.png';
 
 const page_size = 6;
 
@@ -57,54 +57,56 @@ const Launches = () => {
   const isLastPage = currentPage >= totalPages;
 
   return (
-    <div className="content-box">
-      <div className="table-header">
-        <img src={logo} alt="SpaceX Logo" className="logo" />
-        <div className="search-container">
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={handleSearchChange}
-            onKeyPress={(event) => {
-              if (event.key === 'Enter') handleSearch();
-            }}
-            placeholder="Search by Mission Name..."
-            className="search-input"
-          />
-          <button onClick={handleSearch} className="search-button">Search</button>
+    <div className='back-home-image'>
+      <div className="content-box">
+        <div className="table-header">
+          <img src={logo} alt="SpaceX Logo" className="logo" />
+          <div className="search-container">
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={handleSearchChange}
+              onKeyPress={(event) => {
+                if (event.key === 'Enter') handleSearch();
+              }}
+              placeholder="Search by Mission Name..."
+              className="search-input"
+            />
+            <button onClick={handleSearch} className="search-button">Search</button>
+          </div>
         </div>
-      </div>
-      {searched && displayedLaunches.length === 0 && (
-        <p>No missions found with the name "{searchTerm}".</p>
-      )}
-      <table className="launches-table">
-        <thead>
-          <tr>
-            <th>Mission Name</th>
-            <th>Rocket Name</th>
-            <th>Rocket Type</th>
-            <th>Launch Year</th>
-          </tr>
-        </thead>
-        <tbody>
-          {displayedLaunches.map((launch) => (
-            <tr key={launch.id} onClick={() => handleRowClick(launch.id)}> {/* Clickable row */}
-              <td>{launch.mission_name}</td>
-              <td>{launch.rocket.rocket_name}</td>
-              <td>{launch.rocket.rocket_type}</td>
-              <td>{new Date(launch.launch_date_utc).getFullYear()}</td>
+        {searched && displayedLaunches.length === 0 && (
+          <p>No missions found with the name "{searchTerm}".</p>
+        )}
+        <table className="launches-table">
+          <thead>
+            <tr>
+              <th>Mission Name</th>
+              <th>Rocket Name</th>
+              <th>Rocket Type</th>
+              <th>Launch Year</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-      {displayedLaunches.length > 0 && !isLastPage && (
-        <div className="pagination">
-          <span>{`${currentDisplayed} of ${totalLaunches}`}</span>
-          <button onClick={loadMoreLaunches} disabled={loading || isLastPage}>
-            {loading ? 'Loading...' : 'Load More'}
-          </button>
-        </div>
-      )}
+          </thead>
+          <tbody>
+            {displayedLaunches.map((launch) => (
+              <tr key={launch.id} onClick={() => handleRowClick(launch.id)}> {/* Clickable row */}
+                <td>{launch.mission_name}</td>
+                <td>{launch.rocket.rocket_name}</td>
+                <td>{launch.rocket.rocket_type}</td>
+                <td>{new Date(launch.launch_date_utc).getFullYear()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {displayedLaunches.length > 0 && !isLastPage && (
+          <div className="pagination">
+            <span>{`${currentDisplayed} of ${totalLaunches}`}</span>
+            <button onClick={loadMoreLaunches} disabled={loading || isLastPage}>
+              {loading ? 'Loading...' : 'Load More'}
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
