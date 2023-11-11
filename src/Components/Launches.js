@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useQuery } from '@apollo/client';
-import { useNavigate } from 'react-router-dom';
-import { launches } from '../queries';
-import '../Styles/Launches.css';
-import logo from '../assets/raster/wordmark@2x.png';
+import React, { useState, useEffect } from "react";
+import { useQuery } from "@apollo/client";
+import { useNavigate } from "react-router-dom";
+import { launches } from "../queries";
+import "../Styles/Launches.css";
+import logo from "../assets/raster/wordmark@2x.png";
 
 const page_size = 6;
 
@@ -11,10 +11,10 @@ const Launches = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [allLaunches, setAllLaunches] = useState([]);
   const [displayedLaunches, setDisplayedLaunches] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [searched, setSearched] = useState(false);
 
-  const navigate = useNavigate(); // Hook for navigation
+  const navigate = useNavigate();
   const { loading, error, data } = useQuery(launches);
 
   useEffect(() => {
@@ -40,25 +40,30 @@ const Launches = () => {
   const loadMoreLaunches = () => {
     const nextPage = currentPage + 1;
     setCurrentPage(nextPage);
-    const nextLaunches = allLaunches.slice(currentPage * page_size, nextPage * page_size);
+    const nextLaunches = allLaunches.slice(
+      currentPage * page_size,
+      nextPage * page_size
+    );
     setDisplayedLaunches(displayedLaunches.concat(nextLaunches));
   };
 
   const handleRowClick = (id) => {
-    navigate(`/ticket/${id}`); // Navigate to the Ticket component with the given launch ID
+    navigate(`/ticket/${id}`);
   };
 
-  if (loading) return <p></p>;
+  if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
 
   const totalLaunches = allLaunches.length;
-  const currentDisplayed = currentPage * page_size > totalLaunches ? totalLaunches : currentPage * page_size;
+  const currentDisplayed =
+    currentPage * page_size > totalLaunches
+      ? totalLaunches
+      : currentPage * page_size;
   const totalPages = Math.ceil(totalLaunches / page_size);
   const isLastPage = currentPage >= totalPages;
 
-  
   return (
-    <div className='back-home-image'>
+    <div className="back-home-image">
       <div className="content-box">
         <div className="table-header">
           <img src={logo} alt="SpaceX Logo" className="logo" />
@@ -68,12 +73,14 @@ const Launches = () => {
               value={searchTerm}
               onChange={handleSearchChange}
               onKeyPress={(event) => {
-                if (event.key === 'Enter') handleSearch();
+                if (event.key === "Enter") handleSearch();
               }}
               placeholder="Search by Mission Name..."
               className="search-input"
             />
-            <button onClick={handleSearch} className="search-button">Search</button>
+            <button onClick={handleSearch} className="search-button">
+              Search
+            </button>
           </div>
         </div>
         {searched && displayedLaunches.length === 0 && (
@@ -84,17 +91,21 @@ const Launches = () => {
             <tr>
               <th>Mission Name</th>
               <th>Rocket Name</th>
-              <th>Rocket Type</th>
-              <th>Launch Year</th>
+              <th className="center-text">Rocket Type</th>
+              <th className="center-text">Launch Year</th>
             </tr>
           </thead>
           <tbody>
             {displayedLaunches.map((launch) => (
-              <tr key={launch.id} onClick={() => handleRowClick(launch.id)}> {/* Clickable row */}
+              <tr key={launch.id} onClick={() => handleRowClick(launch.id)}>
                 <td>{launch.mission_name}</td>
                 <td>{launch.rocket.rocket_name}</td>
-                <td>{launch.rocket.rocket_type}</td>
-                <td>{new Date(launch.launch_date_utc).getFullYear()}</td>
+                <td style={{ textAlign: "center" }}>
+                  {launch.rocket.rocket_type}
+                </td>
+                <td style={{ textAlign: "center" }}>
+                  {new Date(launch.launch_date_utc).getFullYear()}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -103,7 +114,7 @@ const Launches = () => {
           <div className="pagination">
             <span>{`${currentDisplayed} of ${totalLaunches}`}</span>
             <button onClick={loadMoreLaunches} disabled={loading || isLastPage}>
-              {loading ? 'Loading...' : 'Load More'}
+              {loading ? "Loading..." : "Load More"}
             </button>
           </div>
         )}
@@ -113,3 +124,4 @@ const Launches = () => {
 };
 
 export default Launches;
+
