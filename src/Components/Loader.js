@@ -5,7 +5,7 @@ const Loader = () => {
         <div className="loader-container">
             <p className="loader-text">
                 <label>🚀</label>
-                Loading data through wormholes...
+                Loading data...
             </p>
         </div>
     );
