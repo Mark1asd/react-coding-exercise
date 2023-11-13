@@ -1,0 +1,14 @@
+.loader-container {
+    margin-top: 8em;
+    margin-left: 5em;
+    display: flex;
+    justify-content: center;
+}
+
+.loader-text {
+    display: flex;
+    gap: 2em;
+    align-items: center;
+    height: 2em;
+    font-size: 1.8em;
+}

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { launches } from "../queries";
 import "../Styles/Launches.css";
 import logo from "../assets/raster/wordmark@2x.png";
+import Loader from "./Loader";
 
 const page_size = 6;
 
@@ -51,7 +52,7 @@ const Launches = () => {
     navigate(`/ticket/${id}`);
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p><Loader /></p>;
   if (error) return <p>Error :(</p>;
 
   const totalLaunches = allLaunches.length;
@@ -75,29 +76,42 @@ const Launches = () => {
               onKeyPress={(event) => {
                 if (event.key === "Enter") handleSearch();
               }}
-              placeholder="Search by Mission Name..."
+              placeholder="Search for flights"
               className="search-input"
             />
             <button onClick={handleSearch} className="search-button">
-              Search
+              SEARCH
             </button>
           </div>
         </div>
         {searched && displayedLaunches.length === 0 && (
           <p>No missions found with the name "{searchTerm}".</p>
         )}
+            <div className="line">
+              <div className="fat-line"></div>
+            </div>
+            
         <table className="launches-table">
           <thead>
             <tr>
-              <th>Mission Name</th>
-              <th>Rocket Name</th>
-              <th className="center-text">Rocket Type</th>
-              <th className="center-text">Launch Year</th>
+              <th>MISSION NAME</th>
+              <th>ROCKET NAME</th>
+              <th><text className="center-text">ROCKET TYPE</text></th>
+              <th><text className="center-text">LAUNCH YEAR</text></th>
             </tr>
+            {/* TODO: Логіка для переміщення повзунка за обраним сортуванням та зробити його відображення */}
+            {/* <tr className="ruler-row">
+              <tr colSpan="4">
+                <div className="line"></div>
+                <div className="fat-line"></div>
+              </tr>
+            </tr> */}
           </thead>
+          
           <tbody>
             {displayedLaunches.map((launch) => (
               <tr key={launch.id} onClick={() => handleRowClick(launch.id)}>
+                
                 <td>{launch.mission_name}</td>
                 <td>{launch.rocket.rocket_name}</td>
                 <td style={{ textAlign: "center" }}>
@@ -112,7 +126,7 @@ const Launches = () => {
         </table>
         {displayedLaunches.length > 0 && !isLastPage && (
           <div className="pagination">
-            <span>{`${currentDisplayed} of ${totalLaunches}`}</span>
+            <span>{currentDisplayed} of {totalLaunches}</span>
             <button onClick={loadMoreLaunches} disabled={loading || isLastPage}>
               {loading ? "Loading..." : "Load More"}
             </button>
@@ -124,4 +138,3 @@ const Launches = () => {
 };
 
 export default Launches;
-
