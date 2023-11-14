@@ -99,13 +99,6 @@ const Launches = () => {
               <th><text className="center-text">ROCKET TYPE</text></th>
               <th><text className="center-text">LAUNCH YEAR</text></th>
             </tr>
-            {/* TODO: Логіка для переміщення повзунка за обраним сортуванням та зробити його відображення */}
-            {/* <tr className="ruler-row">
-              <tr colSpan="4">
-                <div className="line"></div>
-                <div className="fat-line"></div>
-              </tr>
-            </tr> */}
           </thead>
           
           <tbody>
