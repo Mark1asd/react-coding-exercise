@@ -114,4 +114,11 @@
     .ticket-action {
         justify-content: center;
     }
+    .launch-ticket-container {
+        transform: rotate(90deg);
+        transform-origin: center center;
+        width: 100vh;
+        height: 100vw;
+        overflow-x: hidden;
+    }
 }
